@@ -1,0 +1,4 @@
+# 本地 wrangler dev 用的密钥；线上用 wrangler secret put，不要提交这个文件的真身。
+# cp .dev.vars.example .dev.vars
+FORWARD_API_TOKEN=服务端 .env 里的 FORWARD_TOKEN
+FORWARD_API_URL=https://email-forward.example.com/forward

@@ -1,0 +1,21 @@
+{
+  "name": "cf-email-forward-worker",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Cloudflare Email Worker：把收到的邮件 POST 给你自己的转发服务",
+  "license": "MIT",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "check": "wrangler deploy --dry-run",
+    "tail": "wrangler tail --format pretty",
+    "test": "node --test test/"
+  },
+  "dependencies": {
+    "postal-mime": "^2.4.4"
+  },
+  "devDependencies": {
+    "wrangler": "^4.86.0"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "cf-email-forward-worker",
+  "main": "src/index.js",
+  // 只需 ≤ 运行时支持的最新日期；这是本地 workerd 与线上都验过的那个日期。
+  "compatibility_date": "2026-05-03",
+
+  // 打开后 Worker 的日志留在 Cloudflare 里可查，不必一直挂着 wrangler tail。
+  "observability": { "enabled": true },
+
+  "vars": {
+    // 服务端永久拒收（404 no_rule / 400 invalid_request）时怎么办：
+    //   reject  退信，发件人立刻知道这个地址没配转发规则（没配 FALLBACK_FORWARD_TO 时的默认值）
+    //   forward 转发到 FALLBACK_FORWARD_TO（配了它就是默认值）
+    //   drop    丢弃，只留一行日志
+    "UNDELIVERABLE_ACTION": "drop",
+
+    // 兜底地址。填了必须先在 Cloudflare Email Routing 里验证过，否则 forward 会失败。
+    // "FALLBACK_FORWARD_TO": "me@gmail.com",
+
+    // 以下都有内置默认值，不需要就整行删掉。
+    // "MAX_ATTEMPTS": "3",                  // 1-5，重试次数（含首次）
+    // "REQUEST_TIMEOUT_MS": "10000",        // 1000-30000，单次请求超时
+    // "MAX_CONTENT_BYTES": "2000000",       // 正文字节上限，服务端整个请求体上限 5MB
+    // "CONTENT_TYPE_PREFERENCE": "html"     // html（默认）| text
+  }
+
+  // 这两个都不写在这里——本仓库是公开的，配置文件进 git。
+  // 而且 wrangler deploy 会用配置文件里的 vars 覆盖同名 secret，所以不能两边都写。
+  //   npx wrangler secret put FORWARD_API_URL    # 服务端 POST /forward 的完整 URL
+  //   npx wrangler secret put FORWARD_API_TOKEN  # 服务端 .env 里的 FORWARD_TOKEN
+  // 本地 wrangler dev 走 .dev.vars（已 gitignore，模板见 .dev.vars.example）。
+}
